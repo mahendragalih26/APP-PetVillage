@@ -47,46 +47,46 @@ class SignIn extends Component {
     const { formData } = this.state;
     await firebase
       .auth()
-      .signInWithEmailAndPassword(formData.email, formData.password);
-    // .then(async res => {
-    //   // AsyncStorage.setItem('uid', res.user.uid);
-    //   await firebase
-    //     .database()
-    //     .ref("/users/" + res.user.uid)
-    //     .update({ status: "online" });
-    //   window.localStorage.setItem("uid", res.user.uid);
-    //   window.localStorage.setItem("name", res.user.username);
-    //   window.localStorage.setItem("email", res.user.email);
-    //   window.localStorage.setItem("image", res.user.image);
+      .signInWithEmailAndPassword(formData.email, formData.password)
+      .then(async res => {
+        // AsyncStorage.setItem('uid', res.user.uid);
+        console.log("response firebase login = ", res);
+        await firebase
+          .database()
+          .ref("/users/" + res.user.uid)
+          .update({ status: "online" });
+        window.localStorage.setItem("uid", res.user.uid);
+        window.localStorage.setItem("name", res.user.displayName);
 
-    //   // Toast.show({
-    //   //   text: `Welcome ${res.user.username}`,
-    //   //   buttonText: 'Ok',
-    //   //   type: 'success',
-    //   //   position: 'bottom',
-    //   //   duration: 4000,
-    //   //   style: styles.toast,
-    //   // });
+        // Toast.show({
+        //   text: `Welcome ${res.user.username}`,
+        //   buttonText: 'Ok',
+        //   type: 'success',
+        //   position: 'bottom',
+        //   duration: 4000,
+        //   style: styles.toast,
+        // });
 
-    //   await client
-    //     .authenticate()
-    //     .then(resp => {
-    //       this.setState({
-    //         myToken: resp.data.access_token,
-    //         expired: resp.data.expires_in
-    //       });
-    //       // const token = resp.data.access_token;
-    //       // const expires = resp.data.expires_in;
-    //     })
-    //     .then(console.log("isi Tokennya adalah ", this.state.myToken));
-    //   await client.animal.search().then(resp => {
-    //     this.setState({
-    //       animals: resp.data.animals
-    //     });
-    //   });
+        await client
+          .authenticate()
+          .then(resp => {
+            this.setState({
+              myToken: resp.data.access_token,
+              expired: resp.data.expires_in
+            });
+            window.localStorage.setItem("token", resp.data.access_token);
+            // const token = resp.data.access_token;
+            // const expires = resp.data.expires_in;
+          })
+          .then(console.log("isi Tokennya adalah ", this.state.myToken));
+        await client.animal.search().then(resp => {
+          this.setState({
+            animals: resp.data.animals
+          });
+        });
 
-    //   // this.props.navigation.navigate("HomeScreen");
-    // });
+        this.props.history.push("/home");
+      });
   };
 
   componentDidMount = async () => {
@@ -184,7 +184,7 @@ class SignIn extends Component {
                 <Card.Title as="h2" className="text-center">
                   PetVillage
                 </Card.Title>
-                <Form onSubmit={this.handleSubmit}>
+                <Form>
                   <Form.Row>
                     <Form.Group as={Col} controlId="formGridEmail">
                       <Form.Label>Email</Form.Label>
@@ -210,7 +210,7 @@ class SignIn extends Component {
                     </Form.Group>
                   </Form.Row>
                   <div className="text-right">
-                    <Button variant="primary" type="submit">
+                    <Button variant="primary" onClick={this.handleSubmit}>
                       Masuk
                     </Button>
                   </div>

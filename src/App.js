@@ -18,10 +18,10 @@ function App() {
         <Route
           path="/"
           exact
-          render={props => {
+          render={({ history }) => {
             return (
               <Fragment>
-                <Home />
+                <Home history={history} />
                 {/* <SignIn /> */}
               </Fragment>
             );
@@ -30,10 +30,10 @@ function App() {
         <Route
           path="/login"
           exact
-          render={props => {
+          render={({ history }) => {
             return (
               <Fragment>
-                <SignIn />
+                <SignIn history={history} />
                 {/* <SignIn /> */}
               </Fragment>
             );
@@ -42,10 +42,10 @@ function App() {
         <Route
           path="/register"
           exact
-          render={props => {
+          render={({ history }) => {
             return (
               <Fragment>
-                <SignUp />
+                <SignUp history={history} />
               </Fragment>
             );
           }}

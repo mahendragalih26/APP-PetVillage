@@ -1,7 +1,9 @@
 import React, { Component, Fragment } from "react";
+import { Container } from "react-bootstrap";
 
 import NavbarTop from "../../Components/Navbars/TopNavbar.jsx";
 import HCarousel from "../../Components/Carousel/HomeCarousel.jsx";
+import CardList from "../../Components/Cards/HomeList.jsx";
 // import dotenv from "dotenv";
 
 import { Client } from "@petfinder/petfinder-js";
@@ -46,7 +48,11 @@ class myHome extends Component {
     return (
       <Fragment>
         <NavbarTop />
-        <HCarousel />
+        <Container>
+          <HCarousel />
+          <div></div>
+          <CardList />
+        </Container>
       </Fragment>
     );
   }

@@ -45,19 +45,23 @@ class SignUp extends Component {
       .auth()
       .createUserWithEmailAndPassword(formData.email, formData.password)
       .then(res => {
-        const uid = res.user.uid;
-        let userf = firebase.auth().currentUser;
-        userf.updateProfile({ displayName: formData.username });
-        firebase
-          .database()
-          .ref("users/" + uid)
-          .set({
-            username: formData.username,
-            image: formData.image,
-            id: uid,
-            status: "offline"
-          });
+        // const uid = res.user.uid;
+        // let userf = firebase.auth().currentUser;
+        // userf.updateProfile({ displayName: formData.username });
+        // firebase
+        //   .database()
+        //   .ref("users/" + uid)
+        //   .set({
+        //     username: formData.username,
+        //     phone: formData.phone,
+        //     email: formData.email,
+        //     image: formData.image,
+        //     id: uid,
+        //     status: "offline"
+        //   });
         console.log("success : ", res);
+        // console.log("history : ", this.prop);
+        this.props.history.push("/login");
       })
       .catch(function(error) {
         let errorCode = error.code;
@@ -188,7 +192,7 @@ class SignUp extends Component {
 
                   <div className="text-right">
                     <Button variant="primary" onClick={this.handleSubmit}>
-                      Masuk
+                      Daftar
                     </Button>
                   </div>
                 </Form>
