@@ -1,10 +1,17 @@
 import React, { Component, Fragment } from "react";
 import { Card, Form, Button, Row, Col, Image } from "react-bootstrap";
 
-import firebase from "firebase";
+// import firebase from "firebase";
+import firebase from "../../Configs/Firebase";
 
 import bg from "../../Assets/bg/bg.jpg";
 import bg3 from "../../Assets/bg/bg2.jpg";
+
+import { Client } from "@petfinder/petfinder-js";
+const client = new Client({
+  apiKey: process.env.REACT_APP_API_KEY,
+  secret: process.env.REACT_APP_SECRET_KEY
+});
 
 class SignIn extends Component {
   constructor(props) {
@@ -14,58 +21,102 @@ class SignIn extends Component {
         email: "",
         password: ""
       },
-      showToast: false
+      showToast: false,
+      myToken: "",
+      expired: ""
     };
   }
 
-  handleChange = (name, value) => {
+  handleChange = e => {
     let newFormData = { ...this.state.formData };
+    const target = e.target;
+    const name = target.name;
+    const value = target.value;
     newFormData[name] = value;
-    this.setState({
-      formData: newFormData
-    });
-    console.log(newFormData);
+    this.setState(
+      {
+        formData: newFormData
+      },
+      () => {
+        console.log(this.state.formData);
+      }
+    );
   };
 
   handleSubmit = async () => {
     const { formData } = this.state;
     await firebase
       .auth()
-      .signInWithEmailAndPassword(formData.email, formData.password)
-      .then(async res => {
-        // AsyncStorage.setItem('uid', res.user.uid);
-        await firebase
-          .database()
-          .ref("/users/" + res.user.uid)
-          .update({ status: "online" });
-        window.localStorage.setItem("uid", res.user.uid);
-        window.localStorage.setItem("name", res.user.username);
-        window.localStorage.setItem("image", res.user.image);
+      .signInWithEmailAndPassword(formData.email, formData.password);
+    // .then(async res => {
+    //   // AsyncStorage.setItem('uid', res.user.uid);
+    //   await firebase
+    //     .database()
+    //     .ref("/users/" + res.user.uid)
+    //     .update({ status: "online" });
+    //   window.localStorage.setItem("uid", res.user.uid);
+    //   window.localStorage.setItem("name", res.user.username);
+    //   window.localStorage.setItem("email", res.user.email);
+    //   window.localStorage.setItem("image", res.user.image);
 
-        // Toast.show({
-        //   text: `Welcome ${res.user.username}`,
-        //   buttonText: 'Ok',
-        //   type: 'success',
-        //   position: 'bottom',
-        //   duration: 4000,
-        //   style: styles.toast,
-        // });
+    //   // Toast.show({
+    //   //   text: `Welcome ${res.user.username}`,
+    //   //   buttonText: 'Ok',
+    //   //   type: 'success',
+    //   //   position: 'bottom',
+    //   //   duration: 4000,
+    //   //   style: styles.toast,
+    //   // });
 
-        this.props.navigation.navigate("HomeScreen");
-      });
+    //   await client
+    //     .authenticate()
+    //     .then(resp => {
+    //       this.setState({
+    //         myToken: resp.data.access_token,
+    //         expired: resp.data.expires_in
+    //       });
+    //       // const token = resp.data.access_token;
+    //       // const expires = resp.data.expires_in;
+    //     })
+    //     .then(console.log("isi Tokennya adalah ", this.state.myToken));
+    //   await client.animal.search().then(resp => {
+    //     this.setState({
+    //       animals: resp.data.animals
+    //     });
+    //   });
+
+    //   // this.props.navigation.navigate("HomeScreen");
+    // });
   };
 
   componentDidMount = async () => {
-    await window.localStorage.getItem("uid", (err, res) => {
-      console.log(err, res);
-      console.log("ini responnya =", res);
-      if (res) {
-        // this.props.navigation.navigate('HomeScreen');
-      }
-    });
+    // await client
+    //   .authenticate()
+    //   .then(resp => {
+    //     this.setState({
+    //       myToken: resp.data.access_token,
+    //       expired: resp.data.expires_in
+    //     });
+    //     // const token = resp.data.access_token;
+    //     // const expires = resp.data.expires_in;
+    //   })
+    //   .then(console.log("isi Tokennya adalah ", this.state.myToken));
+    // await client.animal.search().then(resp => {
+    //   this.setState({
+    //     animals: resp.data.animals
+    //   });
+    // });
+    // await window.localStorage.getItem("uid", (err, res) => {
+    //   console.log(err, res);
+    //   console.log("ini responnya =", res);
+    //   if (res) {
+    //     // this.props.navigation.navigate('HomeScreen');
+    //   }
+    // });
   };
 
   render() {
+    console.log("my token = ", this.state.myToken);
     return (
       <Fragment>
         <Row

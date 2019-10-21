@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from "react";
 import { Card, Form, Button, Row, Col, Image } from "react-bootstrap";
+import { Redirect } from "react-router-dom";
+// import firebase from "firebase";
+import firebase from "../../Configs/Firebase";
 
-import firebase from "firebase";
-
-import bg from "../../Assets/bg/bg.jpg";
 import bg3 from "../../Assets/bg/bg3.jpg";
 
 class SignUp extends Component {
@@ -12,6 +12,7 @@ class SignUp extends Component {
     this.state = {
       formData: {
         username: "",
+        phone: "",
         email: "",
         password: "",
         image:
@@ -21,56 +22,52 @@ class SignUp extends Component {
     };
   }
 
-  handleChange = (name, value) => {
+  handleChange = e => {
     let newFormData = { ...this.state.formData };
+    const target = e.target;
+    const name = target.name;
+    const value = target.value;
     newFormData[name] = value;
-    this.setState({
-      formData: newFormData
-    });
-    console.log(newFormData);
+    this.setState(
+      {
+        formData: newFormData
+      },
+      () => {
+        console.log(this.state.formData);
+      }
+    );
   };
 
-  handleSubmit = async () => {
+  handleSubmit = () => {
     const { formData } = this.state;
-    if (formData.username.length < 6 || formData.email.length < 6) {
-      let errMsg = "";
-      if (formData.username.length < 6) {
-        errMsg = "The Username must be 6 characters long or more";
-      } else if (formData.email.length < 6) {
-        errMsg = "The Email must be 6 characters long or more";
-      }
-      // Toast.show({
-      //   text: errMsg,
-      //   buttonText: 'Ok',
-      //   type: 'danger',
-      //   position: 'bottom',
-      //   duration: 3000,
-      //   style: styles.toast,
-      // });
-    } else {
-      await firebase
-        .auth()
-        .createUserWithEmailAndPassword(formData.email, formData.password)
-        .then(({ user }) => {
-          const idUser = user.uid;
-          let userf = firebase.auth().currentUser;
-          userf.updateProfile({ displayName: formData.username });
-          firebase
-            .database()
-            .ref("users/" + idUser)
-            .set({
-              username: formData.username,
-              email: formData.email,
-              image: formData.image,
-              id: idUser,
-              status: "offline"
-            });
-          this.props.history.push("/login");
-        });
-    }
+    console.log("emailnya = ", formData.email);
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(formData.email, formData.password)
+      .then(res => {
+        const uid = res.user.uid;
+        let userf = firebase.auth().currentUser;
+        userf.updateProfile({ displayName: formData.username });
+        firebase
+          .database()
+          .ref("users/" + uid)
+          .set({
+            username: formData.username,
+            image: formData.image,
+            id: uid,
+            status: "offline"
+          });
+        console.log("success : ", res);
+      })
+      .catch(function(error) {
+        let errorCode = error.code;
+        let errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+      });
   };
 
   render() {
+    console.log("my props = ", this.props);
     return (
       <Fragment>
         <Row
@@ -140,14 +137,24 @@ class SignUp extends Component {
                 <Card.Title as="h2" className="text-center">
                   PetVillage
                 </Card.Title>
-                <Form onSubmit={this.handleSubmit}>
+                <Form>
                   <Form.Row>
-                    <Form.Group as={Col} controlId="formGridEmail">
+                    <Form.Group as={Col} controlId="formGridUsername">
                       <Form.Label>Username</Form.Label>
                       <Form.Control
-                        type="texy"
+                        type="text"
                         name="username"
                         placeholder="insert Username here.."
+                        onChange={this.handleChange}
+                        required
+                      />
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="formGridPhone">
+                      <Form.Label>Phone Number</Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="phone"
+                        placeholder="insert phone number"
                         onChange={this.handleChange}
                         required
                       />
@@ -164,6 +171,9 @@ class SignUp extends Component {
                         required
                       />
                     </Form.Group>
+                  </Form.Row>
+
+                  <Form.Row>
                     <Form.Group as={Col} controlId="formGridPassword">
                       <Form.Label>Password</Form.Label>
                       <Form.Control
@@ -175,8 +185,9 @@ class SignUp extends Component {
                       />
                     </Form.Group>
                   </Form.Row>
+
                   <div className="text-right">
-                    <Button variant="primary" type="submit">
+                    <Button variant="primary" onClick={this.handleSubmit}>
                       Masuk
                     </Button>
                   </div>

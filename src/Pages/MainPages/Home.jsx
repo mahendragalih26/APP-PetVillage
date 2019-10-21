@@ -21,22 +21,22 @@ class myHome extends Component {
   }
 
   componentDidMount = async () => {
-    await client
-      .authenticate()
-      .then(resp => {
-        this.setState({
-          myToken: resp.data.access_token,
-          expired: resp.data.expires_in
-        });
-        // const token = resp.data.access_token;
-        // const expires = resp.data.expires_in;
-      })
-      .then(console.log("isi Tokennya adalah ", this.state.myToken));
-    await client.animal.search().then(resp => {
-      this.setState({
-        animals: resp.data.animals
-      });
-    });
+    // await client
+    //   .authenticate()
+    //   .then(resp => {
+    //     this.setState({
+    //       myToken: resp.data.access_token,
+    //       expired: resp.data.expires_in
+    //     });
+    //     // const token = resp.data.access_token;
+    //     // const expires = resp.data.expires_in;
+    //   })
+    //   .then(console.log("isi Tokennya adalah ", this.state.myToken));
+    // await client.animal.search().then(resp => {
+    //   this.setState({
+    //     animals: resp.data.animals
+    //   });
+    // });
   };
 
   render() {

@@ -5,15 +5,9 @@ import { Redirect } from "react-router-dom";
 
 // import store from "./Publics/store";
 
-// import TryChart from "./components/Contents/Chart.jsx";
 import SignIn from "./Pages/AuthPages/SignIn";
 import SignUp from "./Pages/AuthPages/SignUp";
 import Home from "./Pages/MainPages/Home";
-// import Main from "./Pages/Main/dashboard.jsx";
-// import MainBalance from "./Pages/Main/balance.jsx";
-// import MainHistory from "./Pages/Main/history.jsx";
-// import PackageItem from "./Pages/Main/package_item.jsx";
-// import Category from "./Pages/Main/category.jsx";
 
 function App() {
   return (

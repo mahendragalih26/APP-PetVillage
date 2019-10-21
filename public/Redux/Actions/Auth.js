@@ -1,15 +1,14 @@
 import Axios from "axios";
 
-// export const getToken = token => {
-//   return {
-//     type: "GET_ACCES",
-//     payload: Axios.post(`${process.env.REACT_APP_HOST}/v2/oauth2/token`, {
-//       headers: {
-//         Authorization: `Bearer ${process.env.REACT_TOKEN}`
-//       }
-//     })
-//   };
-// };
+export const SignUp = data => dispatch => {
+  dispatch({ type: "USER_SIGNUP", value: true });
+  return firebase
+    .auth()
+    .createUserWithEmailAndPassword(data.email, data.password)
+    .then(res => {
+      console.log("succes fro action = ", res);
+    });
+};
 
 export const getAnimals = token => {
   return {
