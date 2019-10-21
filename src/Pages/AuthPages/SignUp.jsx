@@ -1,0 +1,193 @@
+import React, { Component, Fragment } from "react";
+import { Card, Form, Button, Row, Col, Image } from "react-bootstrap";
+
+import firebase from "firebase";
+
+import bg from "../../Assets/bg/bg.jpg";
+import bg3 from "../../Assets/bg/bg3.jpg";
+
+class SignUp extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      formData: {
+        username: "",
+        email: "",
+        password: "",
+        image:
+          "https://www.shareicon.net/data/2016/09/01/822711_user_512x512.png"
+      },
+      showToast: false
+    };
+  }
+
+  handleChange = (name, value) => {
+    let newFormData = { ...this.state.formData };
+    newFormData[name] = value;
+    this.setState({
+      formData: newFormData
+    });
+    console.log(newFormData);
+  };
+
+  handleSubmit = async () => {
+    const { formData } = this.state;
+    if (formData.username.length < 6 || formData.email.length < 6) {
+      let errMsg = "";
+      if (formData.username.length < 6) {
+        errMsg = "The Username must be 6 characters long or more";
+      } else if (formData.email.length < 6) {
+        errMsg = "The Email must be 6 characters long or more";
+      }
+      // Toast.show({
+      //   text: errMsg,
+      //   buttonText: 'Ok',
+      //   type: 'danger',
+      //   position: 'bottom',
+      //   duration: 3000,
+      //   style: styles.toast,
+      // });
+    } else {
+      await firebase
+        .auth()
+        .createUserWithEmailAndPassword(formData.email, formData.password)
+        .then(({ user }) => {
+          const idUser = user.uid;
+          let userf = firebase.auth().currentUser;
+          userf.updateProfile({ displayName: formData.username });
+          firebase
+            .database()
+            .ref("users/" + idUser)
+            .set({
+              username: formData.username,
+              email: formData.email,
+              image: formData.image,
+              id: idUser,
+              status: "offline"
+            });
+          this.props.history.push("/login");
+        });
+    }
+  };
+
+  render() {
+    return (
+      <Fragment>
+        <Row
+          style={{
+            height: "657px",
+            width: "100%",
+            backgroundColor: "#000",
+            margin: "0px"
+          }}
+        >
+          <Col
+            md={8}
+            style={{
+              // backgroundImage: `url(${bg3})`,
+              // width: "600px"
+              margin: "0px",
+              padding: "0px"
+            }}
+          >
+            <Image
+              src={bg3}
+              style={{
+                position: "relative",
+                width: "100%",
+                height: "100%",
+                opacity: "0.7"
+              }}
+              fluid
+            />
+          </Col>
+          <div
+            style={{
+              position: "absolute",
+              top: "20%",
+              width: "70%",
+              textAlign: "center"
+            }}
+          >
+            <h1 style={{ color: "white", zIndex: "10" }}>Daftar Akun</h1>
+            <h2 style={{ color: "white", zIndex: "10" }}>
+              {" "}
+              dan adopsi Hewan Peliharaanmu
+            </h2>
+            {/* <img
+              src={bg}
+              style={{ width: "300px", height: "300px", borderRadius: "50px" }}
+            /> */}
+          </div>
+          <Col
+            md={4}
+            style={{
+              padding: "0px"
+            }}
+          >
+            <Card
+              style={{
+                // margin: "auto",
+                width: "100%",
+                height: "100%"
+                // position: "absolute",
+                // zIndex: "4"
+              }}
+              bg="light"
+              variant="primary"
+            >
+              <Card.Body>
+                <Card.Title as="h2" className="text-center">
+                  PetVillage
+                </Card.Title>
+                <Form onSubmit={this.handleSubmit}>
+                  <Form.Row>
+                    <Form.Group as={Col} controlId="formGridEmail">
+                      <Form.Label>Username</Form.Label>
+                      <Form.Control
+                        type="texy"
+                        name="username"
+                        placeholder="insert Username here.."
+                        onChange={this.handleChange}
+                        required
+                      />
+                    </Form.Group>
+                  </Form.Row>
+                  <Form.Row>
+                    <Form.Group as={Col} controlId="formGridEmail">
+                      <Form.Label>Email</Form.Label>
+                      <Form.Control
+                        type="email"
+                        name="email"
+                        placeholder="Your Email..."
+                        onChange={this.handleChange}
+                        required
+                      />
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="formGridPassword">
+                      <Form.Label>Password</Form.Label>
+                      <Form.Control
+                        type="password"
+                        name="password"
+                        placeholder="Password..."
+                        onChange={this.handleChange}
+                        required
+                      />
+                    </Form.Group>
+                  </Form.Row>
+                  <div className="text-right">
+                    <Button variant="primary" type="submit">
+                      Masuk
+                    </Button>
+                  </div>
+                </Form>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Fragment>
+    );
+  }
+}
+
+export default SignUp;
