@@ -4,9 +4,9 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import "bootstrap/dist/css/bootstrap.min.css";
-import firebase from "./Configs/Firebase";
+// import firebase from "./Configs/Firebase";
 
-console.log("config firebase  === ", firebase);
+// console.log("config firebase  === ", firebase);
 
 ReactDOM.render(<App />, document.getElementById("root"));
 
