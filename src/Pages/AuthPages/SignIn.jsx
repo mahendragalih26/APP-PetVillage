@@ -1,5 +1,14 @@
 import React, { Component, Fragment } from "react";
-import { Card, Form, Button, Row, Col, Image } from "react-bootstrap";
+import {
+  Card,
+  Form,
+  Button,
+  Row,
+  Col,
+  Image,
+  Alert,
+  Container
+} from "react-bootstrap";
 
 // import firebase from "firebase";
 import firebase from "../../Configs/Firebase";
@@ -8,6 +17,7 @@ import bg from "../../Assets/bg/bg.jpg";
 import bg3 from "../../Assets/bg/bg2.jpg";
 
 import { Client } from "@petfinder/petfinder-js";
+import { CardBody } from "react-bootstrap/Card";
 const client = new Client({
   apiKey: process.env.REACT_APP_API_KEY,
   secret: process.env.REACT_APP_SECRET_KEY
@@ -23,7 +33,8 @@ class SignIn extends Component {
       },
       showToast: false,
       myToken: "",
-      expired: ""
+      expired: "",
+      errMsg: null
     };
   }
 
@@ -58,15 +69,6 @@ class SignIn extends Component {
         window.localStorage.setItem("uid", res.user.uid);
         window.localStorage.setItem("name", res.user.displayName);
 
-        // Toast.show({
-        //   text: `Welcome ${res.user.username}`,
-        //   buttonText: 'Ok',
-        //   type: 'success',
-        //   position: 'bottom',
-        //   duration: 4000,
-        //   style: styles.toast,
-        // });
-
         await client
           .authenticate()
           .then(resp => {
@@ -86,139 +88,156 @@ class SignIn extends Component {
         });
 
         this.props.history.push("/home");
+      })
+      .catch(err => {
+        this.setState({
+          errMsg: err.message
+        });
       });
-  };
-
-  componentDidMount = async () => {
-    // await client
-    //   .authenticate()
-    //   .then(resp => {
-    //     this.setState({
-    //       myToken: resp.data.access_token,
-    //       expired: resp.data.expires_in
-    //     });
-    //     // const token = resp.data.access_token;
-    //     // const expires = resp.data.expires_in;
-    //   })
-    //   .then(console.log("isi Tokennya adalah ", this.state.myToken));
-    // await client.animal.search().then(resp => {
-    //   this.setState({
-    //     animals: resp.data.animals
-    //   });
-    // });
-    // await window.localStorage.getItem("uid", (err, res) => {
-    //   console.log(err, res);
-    //   console.log("ini responnya =", res);
-    //   if (res) {
-    //     // this.props.navigation.navigate('HomeScreen');
-    //   }
-    // });
   };
 
   render() {
     console.log("my token = ", this.state.myToken);
     return (
       <Fragment>
-        <Row
-          style={{
-            height: "657px",
-            width: "100%",
-            backgroundColor: "#000",
-            margin: "0px"
-          }}
-        >
-          <Col
-            md={8}
+        <Container style={{ margin: "0px", height: "100%" }}>
+          <Row
             style={{
-              // backgroundImage: `url(${bg3})`,
-              // width: "600px"
-              margin: "0px",
-              padding: "0px"
+              position: "fixed",
+              height: "100%",
+              width: "100%",
+              backgroundColor: "#000"
             }}
           >
-            <Image
-              src={bg3}
+            <Col
+              md={8}
               style={{
-                position: "relative",
-                width: "100%",
-                height: "100%",
-                opacity: "0.7"
+                // backgroundImage: `url(${bg3})`,
+                // width: "600px"
+                margin: "0px",
+                padding: "0px"
               }}
-              fluid
-            />
-          </Col>
-          <div
-            style={{
-              position: "absolute",
-              top: "20%",
-              width: "70%",
-              textAlign: "center"
-            }}
-          >
-            <h1 style={{ color: "white", zIndex: "10" }}>
-              Adopsi Hewan Kesayanganmu
-            </h1>
-            {/* <img
+            >
+              <Image
+                src={bg3}
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  height: "100%",
+                  opacity: "0.7"
+                }}
+                fluid
+              />
+            </Col>
+            <div
+              style={{
+                position: "absolute",
+                top: "20%",
+                width: "70%",
+                textAlign: "center"
+              }}
+            >
+              <h1 style={{ color: "white", zIndex: "10" }}>
+                Adopsi Hewan Kesayanganmu
+              </h1>
+              {/* <img
               src={bg}
               style={{ width: "300px", height: "300px", borderRadius: "50px" }}
             /> */}
-          </div>
-          <Col
-            md={4}
-            style={{
-              padding: "0px"
-            }}
-          >
-            <Card
+            </div>
+            <Col
+              md={4}
               style={{
-                // margin: "auto",
-                width: "100%",
-                height: "100%"
-                // position: "absolute",
-                // zIndex: "4"
+                padding: "0px",
+                heigh: "100%"
               }}
-              bg="light"
-              variant="primary"
             >
-              <Card.Body>
-                <Card.Title as="h2" className="text-center">
-                  PetVillage
-                </Card.Title>
-                <Form>
-                  <Form.Row>
-                    <Form.Group as={Col} controlId="formGridEmail">
-                      <Form.Label>Email</Form.Label>
-                      <Form.Control
-                        type="email"
-                        name="email"
-                        placeholder="Your Email..."
-                        onChange={this.handleChange}
-                        required
-                      />
-                    </Form.Group>
-                  </Form.Row>
-                  <Form.Row>
-                    <Form.Group as={Col} controlId="formGridPassword">
-                      <Form.Label>Password</Form.Label>
-                      <Form.Control
-                        type="password"
-                        name="password"
-                        placeholder="Password..."
-                        onChange={this.handleChange}
-                        required
-                      />
-                    </Form.Group>
-                  </Form.Row>
-                  <div className="text-right">
-                    <Button variant="primary" onClick={this.handleSubmit}>
-                      Masuk
-                    </Button>
+              <Card
+                style={{
+                  padding: "20px",
+                  width: "100%",
+                  height: "100%"
+                }}
+                bg="light"
+                variant="primary"
+              >
+                <Card.Body>
+                  <Card.Title
+                    as="h2"
+                    style={{ fontWeight: "bold", fontSize: "40px" }}
+                  >
+                    Hello,{" "}
+                  </Card.Title>
+                  <Card.Title
+                    as="h3"
+                    style={{ fontWeight: "bold", fontSize: "40px" }}
+                  >
+                    Welcome Back
+                  </Card.Title>
+                  <div style={{ marginTop: "30px" }}>
+                    <Form>
+                      <Form.Row>
+                        <Form.Group as={Col} controlId="formGridEmail">
+                          <Form.Label style={{ fontSize: "20px" }}>
+                            Email
+                          </Form.Label>
+                          <Form.Control
+                            type="email"
+                            name="email"
+                            placeholder="Your Email..."
+                            onChange={this.handleChange}
+                            required
+                          />
+                        </Form.Group>
+                      </Form.Row>
+                      <Form.Row>
+                        <Form.Group as={Col} controlId="formGridPassword">
+                          <Form.Label style={{ fontSize: "20px" }}>
+                            Password
+                          </Form.Label>
+                          <Form.Control
+                            type="password"
+                            name="password"
+                            placeholder="Password..."
+                            onChange={this.handleChange}
+                            required
+                          />
+                        </Form.Group>
+                      </Form.Row>
+                      <Form.Row>
+                        <Col>
+                          Don't Have an Account?
+                          <Card.Link href="/register"> Click here</Card.Link>
+                        </Col>
+                      </Form.Row>
+                      <Form.Row style={{ marginTop: "20px" }}>
+                        <Button
+                          style={{ width: "100%" }}
+                          variant="outline-primary"
+                          onClick={this.handleSubmit}
+                        >
+                          Masuk
+                        </Button>
+                      </Form.Row>
+                    </Form>
                   </div>
-                </Form>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+                  <div style={{ marginTop: "20px" }}>
+                    {this.state.errMsg !== null ? (
+                      <Alert
+                        variant="danger"
+                        onClose={() => this.setState({ errMsg: null })}
+                        dismissible
+                      >
+                        <Alert.Heading>Login Failed</Alert.Heading>
+                        <p>{this.state.errMsg}</p>
+                      </Alert>
+                    ) : null}
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
       </Fragment>
     );
   }

@@ -189,12 +189,21 @@ class SignUp extends Component {
                       />
                     </Form.Group>
                   </Form.Row>
-
-                  <div className="text-right">
-                    <Button variant="primary" onClick={this.handleSubmit}>
+                  <Form.Row>
+                    <Col>
+                      Have an Account?
+                      <Card.Link href="/"> Click here</Card.Link>
+                    </Col>
+                  </Form.Row>
+                  <Form.Row style={{ marginTop: "20px" }}>
+                    <Button
+                      style={{ width: "100%" }}
+                      variant="outline-primary"
+                      onClick={this.handleSubmit}
+                    >
                       Daftar
                     </Button>
-                  </div>
+                  </Form.Row>
                 </Form>
               </Card.Body>
             </Card>

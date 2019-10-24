@@ -1,10 +1,16 @@
 import React, { Component, Fragment } from "react";
-import { Container } from "react-bootstrap";
+import Swal from "sweetalert2";
+
+import { connect } from "react-redux";
+
+import { getAnimals } from "../../Publics/Redux/Actions/Animals";
 
 import NavbarTop from "../../Components/Navbars/TopNavbar.jsx";
+import NavbarMid from "../../Components/Navbars/MidNavbar.jsx";
 import HCarousel from "../../Components/Carousel/HomeCarousel.jsx";
 import CardList from "../../Components/Cards/HomeList.jsx";
-// import dotenv from "dotenv";
+
+import { myPagination } from "../../Publics/Redux/Actions/Animals";
 
 import { Client } from "@petfinder/petfinder-js";
 const client = new Client({
@@ -18,44 +24,91 @@ class myHome extends Component {
     this.state = {
       myToken: "",
       expired: "",
-      animals: []
+      animalsData: [],
+      search: "",
+      isLoading: false
     };
   }
 
+  handleChange = e => {
+    const value = e.target.value;
+    this.setState({
+      search: value
+      // search: target
+    });
+    console.log("ini searchnya = ", this.state.search);
+  };
+
+  nextPage = link => {
+    this.props.dispatch(myPagination(link)).then(() => {
+      this.setState({
+        animalsData: this.props.animals.allAnimals
+      });
+    });
+  };
+
   componentDidMount = async () => {
-    // await client
-    //   .authenticate()
-    //   .then(resp => {
-    //     this.setState({
-    //       myToken: resp.data.access_token,
-    //       expired: resp.data.expires_in
-    //     });
-    //     // const token = resp.data.access_token;
-    //     // const expires = resp.data.expires_in;
-    //   })
-    //   .then(console.log("isi Tokennya adalah ", this.state.myToken));
-    // await client.animal.search().then(resp => {
-    //   this.setState({
-    //     animals: resp.data.animals
-    //   });
-    // });
+    await this.props
+      .dispatch(getAnimals())
+      .then(() => {
+        this.setState({
+          animalsData: this.props.animals.allAnimals,
+          isLoading: this.props.animals.isLoading
+        });
+      })
+      .catch(err => {
+        console.log("this err from dispatch = ", err);
+        console.log("isi props = ", this.props);
+        Swal.fire({
+          title: "<strong>Session Expired</strong>",
+          type: "info",
+          html: "please re-Login your account",
+          showCloseButton: true,
+          showCancelButton: true,
+          focusConfirm: false,
+          confirmButtonText: '<i class="fas fa-power-off"></i> LogOut!',
+          // confirmButtonAriaLabel: "Thumbs up, great!"
+          // cancelButtonText: '<i class="fa fa-thumbs-down"></i>',
+          // cancelButtonAriaLabel: "Thumbs down"
+          preConfirm: () => {
+            localStorage.clear();
+            window.location.reload();
+          }
+        });
+        // this.setState({
+        //   session: this.props.animals.isRejected
+        // });
+      });
   };
 
   render() {
     console.log("isi Tokennya ", this.state.myToken);
-    console.log("my animals  ", this.state.animals);
+    console.log("my animals  ", this.state.animalsData);
     console.log("my env  ", process.env);
+    console.log("my loading  ", this.state.loading);
+    console.log("session = ", this.state.session);
     return (
       <Fragment>
-        <NavbarTop />
-        <Container>
-          <HCarousel />
-          <div></div>
-          <CardList />
-        </Container>
+        <NavbarTop handleChange={this.handleChange} />
+        <HCarousel />
+        <NavbarMid />
+        <div style={{ backgroundColor: "#efeef1", paddingTop: "20px" }}>
+          <CardList
+            dataAnimals={this.state.animalsData}
+            search={this.state.search}
+            nextPage={this.nextPage}
+          />
+        </div>
       </Fragment>
     );
   }
 }
 
-export default myHome;
+const mapStateToProps = state => {
+  console.log("ini state di home = ", state);
+  return {
+    animals: state.Animals
+  };
+};
+
+export default connect(mapStateToProps)(myHome);
