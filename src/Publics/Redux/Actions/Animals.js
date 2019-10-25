@@ -32,3 +32,17 @@ export const myPagination = endPoint => {
     })
   };
 };
+
+export const getAnimalByType = type => {
+  return {
+    type: "GET_BY_TYPE",
+    payload: Axios.get(
+      `${process.env.REACT_APP_HOST}/v2/animals?type=${type}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      }
+    )
+  };
+};

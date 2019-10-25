@@ -7,7 +7,8 @@ import {
   Col,
   Image,
   Alert,
-  Container
+  Container,
+  Spinner
 } from "react-bootstrap";
 
 // import firebase from "firebase";
@@ -34,7 +35,8 @@ class SignIn extends Component {
       showToast: false,
       myToken: "",
       expired: "",
-      errMsg: null
+      errMsg: null,
+      isLoading: false
     };
   }
 
@@ -61,6 +63,7 @@ class SignIn extends Component {
       .signInWithEmailAndPassword(formData.email, formData.password)
       .then(async res => {
         // AsyncStorage.setItem('uid', res.user.uid);
+        this.setState({ isLoading: true });
         console.log("response firebase login = ", res);
         await firebase
           .database()
@@ -211,13 +214,23 @@ class SignIn extends Component {
                         </Col>
                       </Form.Row>
                       <Form.Row style={{ marginTop: "20px" }}>
-                        <Button
-                          style={{ width: "100%" }}
-                          variant="outline-primary"
-                          onClick={this.handleSubmit}
-                        >
-                          Masuk
-                        </Button>
+                        {this.state.isLoading === true ? (
+                          <Button
+                            style={{ width: "100%" }}
+                            variant="outline-primary"
+                            disabled
+                          >
+                            <Spinner animation="border" variant="primary" />
+                          </Button>
+                        ) : (
+                          <Button
+                            style={{ width: "100%" }}
+                            variant="outline-primary"
+                            onClick={this.handleSubmit}
+                          >
+                            Masuk
+                          </Button>
+                        )}
                       </Form.Row>
                     </Form>
                   </div>

@@ -73,6 +73,27 @@ const storeAnimals = (state = initialState, action) => {
         isFulfilled: true,
         allAnimals: action.payload.data
       };
+    case "GET_BY_TYPE_PENDING":
+      return {
+        ...state,
+        isLoading: true,
+        isFulfilled: false,
+        isRejected: false
+      };
+    case "GET_BY_TYPE_REJECTED":
+      return {
+        ...state,
+        isLoading: false,
+        isRejected: true
+      };
+    case "GET_BY_TYPE_FULFILLED":
+      console.log("Dari Reducer = ", action.payload.data.animals);
+      return {
+        ...state,
+        isLoading: false,
+        isFulfilled: true,
+        allAnimals: action.payload.data
+      };
     default:
       return state;
   }

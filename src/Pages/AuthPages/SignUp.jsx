@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { Card, Form, Button, Row, Col, Image } from "react-bootstrap";
+import { Card, Form, Button, Row, Col, Image, Spinner } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 // import firebase from "firebase";
 import firebase from "../../Configs/Firebase";
@@ -18,7 +18,7 @@ class SignUp extends Component {
         image:
           "https://www.shareicon.net/data/2016/09/01/822711_user_512x512.png"
       },
-      showToast: false
+      isLoading: false
     };
   }
 
@@ -45,22 +45,10 @@ class SignUp extends Component {
       .auth()
       .createUserWithEmailAndPassword(formData.email, formData.password)
       .then(res => {
-        // const uid = res.user.uid;
-        // let userf = firebase.auth().currentUser;
-        // userf.updateProfile({ displayName: formData.username });
-        // firebase
-        //   .database()
-        //   .ref("users/" + uid)
-        //   .set({
-        //     username: formData.username,
-        //     phone: formData.phone,
-        //     email: formData.email,
-        //     image: formData.image,
-        //     id: uid,
-        //     status: "offline"
-        //   });
+        this.setState({
+          isLoading: true
+        });
         console.log("success : ", res);
-        // console.log("history : ", this.prop);
         this.props.history.push("/login");
       })
       .catch(function(error) {
@@ -196,13 +184,23 @@ class SignUp extends Component {
                     </Col>
                   </Form.Row>
                   <Form.Row style={{ marginTop: "20px" }}>
-                    <Button
-                      style={{ width: "100%" }}
-                      variant="outline-primary"
-                      onClick={this.handleSubmit}
-                    >
-                      Daftar
-                    </Button>
+                    {this.state.isLoading === true ? (
+                      <Button
+                        style={{ width: "100%" }}
+                        variant="outline-primary"
+                        disabled
+                      >
+                        <Spinner animation="border" variant="primary" />
+                      </Button>
+                    ) : (
+                      <Button
+                        style={{ width: "100%" }}
+                        variant="outline-primary"
+                        onClick={this.handleSubmit}
+                      >
+                        Daftar
+                      </Button>
+                    )}
                   </Form.Row>
                 </Form>
               </Card.Body>

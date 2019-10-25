@@ -49,6 +49,18 @@ class CardList extends Component {
                                 {animal.status}
                               </Badge>
                             </div>
+                            <div
+                              style={{
+                                position: "absolute",
+                                fontSize: "20px",
+                                top: "8px",
+                                left: "10px"
+                              }}
+                            >
+                              <Badge pill variant="danger">
+                                {animal.species}
+                              </Badge>
+                            </div>
                             <img
                               src={
                                 animal.photos[0] !== undefined

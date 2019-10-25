@@ -10,7 +10,10 @@ import NavbarMid from "../../Components/Navbars/MidNavbar.jsx";
 import HCarousel from "../../Components/Carousel/HomeCarousel.jsx";
 import CardList from "../../Components/Cards/HomeList.jsx";
 
-import { myPagination } from "../../Publics/Redux/Actions/Animals";
+import {
+  myPagination,
+  getAnimalByType
+} from "../../Publics/Redux/Actions/Animals";
 
 import { Client } from "@petfinder/petfinder-js";
 const client = new Client({
@@ -40,11 +43,69 @@ class myHome extends Component {
   };
 
   nextPage = link => {
-    this.props.dispatch(myPagination(link)).then(() => {
-      this.setState({
-        animalsData: this.props.animals.allAnimals
+    this.props
+      .dispatch(myPagination(link))
+      .then(() => {
+        this.setState({
+          animalsData: this.props.animals.allAnimals
+        });
+      })
+      .catch(err => {
+        console.log("this err from dispatch = ", err);
+        console.log("isi props = ", this.props);
+        Swal.fire({
+          title: "<strong>Session Expired</strong>",
+          type: "info",
+          html: "please re-Login",
+          showCloseButton: true,
+          showCancelButton: true,
+          focusConfirm: false,
+          confirmButtonText: '<i class="fas fa-power-off"></i> LogOut!',
+          // confirmButtonAriaLabel: "Thumbs up, great!"
+          // cancelButtonText: '<i class="fa fa-thumbs-down"></i>',
+          // cancelButtonAriaLabel: "Thumbs down"
+          preConfirm: () => {
+            localStorage.clear();
+            window.location.reload();
+          }
+        });
+        // this.setState({
+        //   session: this.props.animals.isRejected
+        // });
       });
-    });
+  };
+
+  getByType = type => {
+    this.props
+      .dispatch(getAnimalByType(type))
+      .then(() => {
+        this.setState({
+          animalsData: this.props.animals.allAnimals
+        });
+      })
+      .catch(err => {
+        console.log("this err from dispatch = ", err);
+        console.log("isi props = ", this.props);
+        Swal.fire({
+          title: "<strong>Session Expired</strong>",
+          type: "info",
+          html: "please re-Login",
+          showCloseButton: true,
+          showCancelButton: true,
+          focusConfirm: false,
+          confirmButtonText: '<i class="fas fa-power-off"></i> LogOut!',
+          // confirmButtonAriaLabel: "Thumbs up, great!"
+          // cancelButtonText: '<i class="fa fa-thumbs-down"></i>',
+          // cancelButtonAriaLabel: "Thumbs down"
+          preConfirm: () => {
+            localStorage.clear();
+            window.location.reload();
+          }
+        });
+        // this.setState({
+        //   session: this.props.animals.isRejected
+        // });
+      });
   };
 
   componentDidMount = async () => {
@@ -62,7 +123,7 @@ class myHome extends Component {
         Swal.fire({
           title: "<strong>Session Expired</strong>",
           type: "info",
-          html: "please re-Login your account",
+          html: "please re-Login",
           showCloseButton: true,
           showCancelButton: true,
           focusConfirm: false,
@@ -91,7 +152,7 @@ class myHome extends Component {
       <Fragment>
         <NavbarTop handleChange={this.handleChange} />
         <HCarousel />
-        <NavbarMid />
+        <NavbarMid getByType={this.getByType} />
         <div style={{ backgroundColor: "#efeef1", paddingTop: "20px" }}>
           <CardList
             dataAnimals={this.state.animalsData}

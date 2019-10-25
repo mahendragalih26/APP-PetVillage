@@ -12,6 +12,8 @@ import Swal from "sweetalert2";
 
 import { Link } from "react-router-dom";
 
+import icon from "../../Assets/icon/icon2.png";
+
 const NavbarTop = props => {
   // function logOut()  {
   //   Swal.fire({
@@ -69,7 +71,15 @@ const NavbarTop = props => {
           }}
           fixed="top"
         >
-          <Navbar.Brand href="/">Navbar</Navbar.Brand>
+          <Navbar.Brand href="/">
+            <img
+              alt=""
+              src={icon}
+              width="150"
+              height="40"
+              className="d-inline-block align-top"
+            />
+          </Navbar.Brand>
           <Nav className="mr-auto">
             {/* <Nav.Link href="#home">Home</Nav.Link>
             <Nav.Link href="#features">Features</Nav.Link>

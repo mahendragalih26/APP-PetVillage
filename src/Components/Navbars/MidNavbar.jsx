@@ -21,13 +21,13 @@ import bg from "../../Assets/content/1.jpg";
 import bg1 from "../../Assets/content/3.jpg";
 import organiz from "../../Assets/bg/organiz.jpg";
 
-const MidNavbar = () => {
+const MidNavbar = props => {
   return (
     <Fragment>
       <Container style={{ widht: "100%", borderLeftWidth: "20px" }}>
         <Row style={{ height: "100%", width: "100%" }}>
           <div class="cards-list">
-            <div class="card-shape 1">
+            <div class="card-shape 1" onClick={() => props.getByType("dog")}>
               <div class="card_image">
                 <img src={bg1} />{" "}
               </div>
@@ -38,7 +38,7 @@ const MidNavbar = () => {
               </div>
             </div>
 
-            <div class="card-shape 2">
+            <div class="card-shape 2" onClick={() => props.getByType("cat")}>
               <div class="card_image">
                 <img src={bg} />
               </div>
